@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Calculadora</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial;
+}
+body{
+  margin:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.calculator{
+  width:100%;
+  max-width:360px;
+  padding:20px;
+}
+.display{
+  color:#fff;
+  font-size:48px;
+  text-align:right;
+  padding:20px 10px;
+  overflow:hidden;
+}
+.buttons{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+button{
+  height:70px;
+  border-radius:50%;
+  border:none;
+  font-size:26px;
+  cursor:pointer;
+}
+.btn-gray{ background:#a5a5a5; color:#000; }
+.btn-dark{ background:#333; color:#fff; }
+.btn-orange{ background:#ff9f0a; color:#fff; }
+.zero{
+  grid-column:span 2;
+  border-radius:40px;
+  text-align:left;
+  padding-left:28px;
+}
+button:active{
+  filter:brightness(1.3);
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+  <div class="display" id="display">0</div>
+
+  <div class="buttons">
+    <button class="btn-gray" onclick="clearAll()">AC</button>
+    <button class="btn-gray" onclick="toggleSign()">±</button>
+    <button class="btn-gray" onclick="percent()">%</button>
+    <button class="btn-orange" onclick="operator('/')">÷</button>
+
+    <button class="btn-dark" onclick="number('7')">7</button>
+    <button class="btn-dark" onclick="number('8')">8</button>
+    <button class="btn-dark" onclick="number('9')">9</button>
+    <button class="btn-orange" onclick="operator('*')">×</button>
+
+    <button class="btn-dark" onclick="number('4')">4</button>
+    <button class="btn-dark" onclick="number('5')">5</button>
+    <button class="btn-dark" onclick="number('6')">6</button>
+    <button class="btn-orange" onclick="operator('-')">−</button>
+
+    <button class="btn-dark" onclick="number('1')">1</button>
+    <button class="btn-dark" onclick="number('2')">2</button>
+    <button class="btn-dark" onclick="number('3')">3</button>
+    <button class="btn-orange" onclick="operator('+')">+</button>
+
+    <button class="btn-dark zero" onclick="number('0')">0</button>
+    <button class="btn-dark" onclick="number('.')">.</button>
+    <button class="btn-orange" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+let current = "0";
+let previous = null;
+let operation = null;
+
+const display = document.getElementById("display");
+
+function update(){
+  display.textContent = current;
+}
+
+function number(num){
+  if(current === "0" && num !== "."){
+    current = num;
+  } else {
+    if(num === "." && current.includes(".")) return;
+    current += num;
+  }
+  update();
+}
+
+function operator(op){
+  previous = current;
+  operation = op;
+  current = "0";
+}
+
+function calculate(){
+  if(previous === null || operation === null) return;
+  let result;
+  const a = parseFloat(previous);
+  const b = parseFloat(current);
+
+  switch(operation){
+    case "+": result = a + b; break;
+    case "-": result = a - b; break;
+    case "*": result = a * b; break;
+    case "/": result = b === 0 ? "Error" : a / b; break;
+  }
+
+  current = result.toString();
+  previous = null;
+  operation = null;
+  update();
+}
+
+function clearAll(){
+  current = "0";
+  previous = null;
+  operation = null;
+  update();
+}
+
+function toggleSign(){
+  if(current !== "0"){
+    current = current.startsWith("-") ? current.slice(1) : "-" + current;
+    update();
+  }
+}
+
+function percent(){
+  current = (parseFloat(current) / 100).toString();
+  update();
+}
+</script>
+
+</body>
+</html>
